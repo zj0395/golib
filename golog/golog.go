@@ -38,8 +38,6 @@ func Init(conf *LogConf) {
 		os.Exit(1)
 	}
 
-	log.SetOutput(fPlain)
-
 	// min level: warn
 	warnWriter := zerolog.MultiLevelWriter(fWarn)
 	warnFilteredWriter := &minFilteredWriter{warnWriter, zerolog.WarnLevel}
@@ -51,6 +49,9 @@ func Init(conf *LogConf) {
 	// combine to a logger
 	w := zerolog.MultiLevelWriter(plainFilteredWriter, warnFilteredWriter)
 	logger = zerolog.New(w).With().Caller().Timestamp().Logger()
+
+	// set log.* to logger
+	log.SetOutput(logger)
 }
 
 // Close release fd
