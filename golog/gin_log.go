@@ -6,10 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// NewGinLogger Log for gin
+// GetGinLogger Log for gin
 //	r := gin.New()
-//	r.Use(golog.NewGinLogger("gin"))
-func NewGinLogger(serName string) gin.HandlerFunc {
+//	r.Use(golog.GetGinLogger("gin"))
+func GetGinLogger(serName string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		t := time.Now()
 		// before request

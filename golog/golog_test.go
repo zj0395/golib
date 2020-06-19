@@ -1,6 +1,7 @@
 package golog
 
 import (
+	"log"
 	"testing"
 	"time"
 )
@@ -12,6 +13,7 @@ func TestPrint(t *testing.T) {
 	}
 	Trace().Msg("hello world")
 	Init(&conf)
+	log.Printf("fff")
 	Trace().Msg("hello world")
 	Info().Msg("hello world")
 	time.Sleep(10 * time.Second)

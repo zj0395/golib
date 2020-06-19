@@ -2,6 +2,7 @@ package golog
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/rs/zerolog"
@@ -36,6 +37,8 @@ func Init(conf *LogConf) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	log.SetOutput(fPlain)
 
 	// min level: warn
 	warnWriter := zerolog.MultiLevelWriter(fWarn)
