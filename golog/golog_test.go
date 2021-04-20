@@ -1,23 +1,30 @@
 package golog
 
 import (
-	"log"
+	"sync"
 	"testing"
-	"time"
 )
 
 func TestPrint(t *testing.T) {
 	conf := LogConf{
-		"tmp.log",
-		1,
+		File:  "tmp.log",
+		Level: -1,
 	}
-	Trace().Msg("hello world")
-	Init(&conf)
-	log.Printf("fff")
-	Trace().Msg("hello world")
-	Info().Msg("hello world")
-	time.Sleep(10 * time.Second)
-	Debug().Msg("hello world")
-	Warn().Msg("hello world")
+	SetDefault(Init(&conf))
+
+	var wg sync.WaitGroup
+	routeCnt := 1000
+	for i := 0; i < routeCnt; i++ {
+		wg.Add(1)
+		go func(i int) {
+			runCnt := 1000
+			for j := 0; j < runCnt; j++ {
+				Info().Int("t1", j).Int("routine", i).Msg("helloworld")
+			}
+			wg.Done()
+		}(i)
+	}
+	wg.Wait()
+
 	Close()
 }

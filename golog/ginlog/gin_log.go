@@ -1,9 +1,10 @@
-package golog
+package ginlog
 
 import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/zj0395/golog"
 )
 
 // GetGinLogger Log for gin
@@ -28,6 +29,6 @@ func GetGinLogger(serName string) gin.HandlerFunc {
 		if msg == "" {
 			msg = "Request"
 		}
-		logger.Info().Str("ser_name", serName).Str("method", c.Request.Method).Str("path", path).Dur("resp_time", latency).Int("status", c.Writer.Status()).Str("client_ip", c.ClientIP()).Msg(msg)
+		golog.Info().Str("ser_name", serName).Str("method", c.Request.Method).Str("path", path).Dur("resp_time", latency).Int("status", c.Writer.Status()).Str("client_ip", c.ClientIP()).Msg(msg)
 	}
 }

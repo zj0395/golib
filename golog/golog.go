@@ -11,20 +11,33 @@ import (
 
 type LogConf struct {
 	File  string
-	Level zerolog.Level
+	Level int8
+	Split bool
 }
 
 // default logger
-var logger zerolog.Logger = dlog.Logger
+var defaultLogger *zerolog.Logger = &dlog.Logger
 var fPlain, fWarn *os.File = nil, nil
 
 func init() {
 	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 }
 
-func Init(conf *LogConf) {
-	zerolog.SetGlobalLevel(conf.Level)
+func GetDefault() *zerolog.Logger {
+	return defaultLogger
+}
 
+func SetDefault(l *zerolog.Logger) {
+	defaultLogger = l
+}
+
+// RedirectStdLog redirect log.* to logger
+func RedirectStdLog() {
+	log.SetOutput(defaultLogger)
+}
+
+func Init(conf *LogConf) *zerolog.Logger {
+	zerolog.SetGlobalLevel(-1)
 	var err error = nil
 	fPlain, err = os.OpenFile(conf.File, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
@@ -48,10 +61,11 @@ func Init(conf *LogConf) {
 
 	// combine to a logger
 	w := zerolog.MultiLevelWriter(plainFilteredWriter, warnFilteredWriter)
-	logger = zerolog.New(w).With().Caller().Timestamp().Logger()
+	logger := zerolog.New(w).With().Caller().Timestamp().Logger()
+	logger.Level(zerolog.Level(conf.Level))
+	logger.Info().Str("f", "f")
 
-	// set log.* to logger
-	log.SetOutput(logger)
+	return &logger
 }
 
 // Close release fd
@@ -62,30 +76,30 @@ func Close() {
 
 // Trace level: -1
 func Trace() *zerolog.Event {
-	return logger.Trace()
+	return defaultLogger.Trace()
 }
 
 // Debug level: 0
 func Debug() *zerolog.Event {
-	return logger.Debug()
+	return defaultLogger.Debug()
 }
 
 // Info level: 1
 func Info() *zerolog.Event {
-	return logger.Info()
+	return defaultLogger.Info()
 }
 
 // Warn level: 2
 func Warn() *zerolog.Event {
-	return logger.Warn()
+	return defaultLogger.Warn()
 }
 
 // Error level: 3
 func Error() *zerolog.Event {
-	return logger.Error()
+	return defaultLogger.Error()
 }
 
 // Fatal level: 4
 func Fatal() *zerolog.Event {
-	return logger.Fatal()
+	return defaultLogger.Fatal()
 }
