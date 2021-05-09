@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/zj0395/golog"
+	"github.com/zj0395/golib/golog"
 )
 
 // GetGinLogger Log for gin
