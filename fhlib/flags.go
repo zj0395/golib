@@ -3,9 +3,7 @@ package fhlib
 import (
 	"github.com/valyala/fasthttp"
 
-	"github.com/zj0395/golib/golog"
 	"github.com/zj0395/golib/liberr"
-	"github.com/zj0395/golib/utils"
 )
 
 const (
@@ -46,35 +44,4 @@ func GetCustom(ctx *fasthttp.RequestCtx) interface{} {
 
 func SetCustom(ctx *fasthttp.RequestCtx, data interface{}) {
 	ctx.SetUserValue(CustomFlag, data)
-}
-
-func GetLogger(ctx *fasthttp.RequestCtx) *golog.Logger {
-	raw := ctx.UserValue(LoggerFlag)
-	if raw == nil {
-		return nil
-	}
-	if v, ok := raw.(*golog.Logger); ok {
-		return v
-	}
-	return golog.GetDefault()
-}
-
-func SetLogger(ctx *fasthttp.RequestCtx, data interface{}) {
-	ctx.SetUserValue(LoggerFlag, data)
-}
-
-func GetLogId(ctx *fasthttp.RequestCtx) string {
-	raw := ctx.UserValue(LogIdFlag)
-	if raw != nil {
-		if v, ok := raw.(string); ok {
-			return v
-		}
-	}
-	logid := utils.GenLogId()
-	SetLogId(ctx, logid)
-	return logid
-}
-
-func SetLogId(ctx *fasthttp.RequestCtx, data interface{}) {
-	ctx.SetUserValue(LogIdFlag, data)
 }

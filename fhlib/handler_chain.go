@@ -5,23 +5,8 @@ import (
 	"time"
 
 	"github.com/valyala/fasthttp"
-	"github.com/zj0395/golib/golog"
 	"github.com/zj0395/golib/liberr"
-	"github.com/zj0395/golib/utils"
 )
-
-func initReq(ctx *fasthttp.RequestCtx) {
-	const requestIDHeader = "X-Request-Id"
-	var logid string
-	if v := ctx.Request.Header.Peek(requestIDHeader); v != nil {
-		logid = string(v)
-	} else {
-		logid = utils.GenLogId()
-	}
-	SetLogId(ctx, logid)
-	logger := golog.GetDefault().With().Str("logid", logid).Logger()
-	SetLogger(ctx, &logger)
-}
 
 // control exec of handlers
 type wrapper struct {
@@ -44,7 +29,6 @@ func (t *wrapper) Add(handler fasthttp.RequestHandler) *wrapper {
 func (t *wrapper) Exec(ctx *fasthttp.RequestCtx) {
 	startTime := time.Now()
 
-	initReq(ctx)
 	logger := GetLogger(ctx)
 
 	defer func() {
